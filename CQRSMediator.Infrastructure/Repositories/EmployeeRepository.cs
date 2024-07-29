@@ -17,8 +17,9 @@ namespace CQRSMediator.Infrastructure.Repositories
 
         public EmployeeRepository(IConfiguration configuration, EmployeeDbContext context)
         {
+            
             _configuration = configuration;
-            _connectionString = _configuration.GetConnectionString("DefaultConnection");
+            _connectionString = _configuration.GetConnectionString("DbContext");
             _context = context;
         }
 
@@ -32,9 +33,8 @@ namespace CQRSMediator.Infrastructure.Repositories
 
         public async Task<bool> UpdateEmployeeAsync(EEmployee model)
         {
-            using var context = new EmployeeDbContext(_connectionString);
-            context.Employees.Update(model);
-            await context.SaveChangesAsync();
+            _context.Employees.Update(model);
+            await _context.SaveChangesAsync();
             return true;
         }
 
@@ -43,13 +43,13 @@ namespace CQRSMediator.Infrastructure.Repositories
         public async Task<IEnumerable<EEmployee>> GetAllEmployeesAsync()
         {
             using var connection = new NpgsqlConnection(_connectionString);
-            return await connection.QueryAsync<EEmployee>("SELECT * FROM EEmployee");
+            return await connection.QueryAsync<EEmployee>("SELECT * FROM public.\"Employees\"");
         }
 
         public async Task<EEmployee> GetEmployeeById(Guid employeeId)
         {
             using var connection = new NpgsqlConnection(_connectionString);
-            var query = "SELECT * FROM EEmployee WHERE Id = @Id";
+            var query = "SELECT * FROM public.\"Employees\" WHERE \"Id\" = @Id";
             return await connection.QuerySingleAsync<EEmployee>(query, new { Id = employeeId });
         }
     }

@@ -34,7 +34,7 @@ namespace CQRSMediator.Api.Controllers
             var result = await _mediator.Send(command);
             return Ok(result);
         }
-        [HttpGet("{id:Guid}")]
+        [HttpGet("GetEmployeeById")]
         public async Task<ActionResult> GetEmployeeById(Guid employeeId)
         {
             var query = new GetEmployeeByIdQuery(employeeId);
