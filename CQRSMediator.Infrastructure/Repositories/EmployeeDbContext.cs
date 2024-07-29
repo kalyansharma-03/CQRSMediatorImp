@@ -1,24 +1,29 @@
 ﻿using CQRSMediator.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CQRSMediator.Infrastructure.Repositories
 {
     public class EmployeeDbContext : DbContext
     {
-        private readonly string _connectionString;
-        public EmployeeDbContext(string connectionString)
+        private readonly IConfiguration _configuration;
+
+        public EmployeeDbContext(DbContextOptions<EmployeeDbContext> options, IConfiguration configuration)
+            : base(options)
         {
-            _connectionString = connectionString;
+            _configuration = configuration;
         }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseNpgsql(_connectionString); 
+            if (!optionsBuilder.IsConfigured)
+            {
+                // Connect to PostgreSQL with connection string
+                optionsBuilder.UseNpgsql(_configuration.GetConnectionString("DbContext"));
+            }
         }
+
         public DbSet<EEmployee> Employees { get; set; }
     }
 }
