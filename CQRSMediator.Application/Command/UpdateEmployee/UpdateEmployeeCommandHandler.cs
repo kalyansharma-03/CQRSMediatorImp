@@ -25,6 +25,7 @@ namespace CQRSMediator.Application.Command.UpdateEmployee
             }
             var model = new EEmployee()
             {
+                Id = request.id,
                 Email = request.Email,
                 Name = request.Name,
             };

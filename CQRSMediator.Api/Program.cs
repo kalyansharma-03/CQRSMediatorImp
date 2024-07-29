@@ -18,6 +18,7 @@ builder.Services.AddMediatR(configuration =>
 
 builder.Services.AddDbContext<EmployeeDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DbContext")));
+builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 
 builder.Services.AddScoped<IEmployeeService, EmployeeRepository>();
 
