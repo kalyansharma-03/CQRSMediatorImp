@@ -5,26 +5,28 @@ using Microsoft.Extensions.Configuration;
 using Npgsql;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace CQRSMediator.Infrastructure.Repositories
 {
     public class EmployeeRepository : IEmployeeService
     {
+        private readonly IConfiguration _configuration;
         private readonly string _connectionString;
-        public EmployeeRepository(IConfiguration configuration)
+        private readonly EmployeeDbContext _context;
+
+        public EmployeeRepository(IConfiguration configuration, EmployeeDbContext context)
         {
-            _connectionString = configuration.GetConnectionString("DefaultConnection");
+            _configuration = configuration;
+            _connectionString = _configuration.GetConnectionString("DefaultConnection");
+            _context = context;
         }
 
-        //WRITE FROM ENTITY FRAMEWORK CORE
+        // WRITE FROM ENTITY FRAMEWORK CORE
         public async Task<Guid> CreateEmployeeAsync(EEmployee model)
         {
-            using var context = new EmployeeDbContext(_connectionString);
-            context.Employees.Add(model);
-            await context.SaveChangesAsync();
+            _context.Employees.Add(model);
+            await _context.SaveChangesAsync();
             return model.Id;
         }
 
