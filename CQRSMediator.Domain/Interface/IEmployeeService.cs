@@ -11,5 +11,7 @@ namespace CQRSMediator.Domain.Interface
     {
         Task<IEnumerable<EEmployee>> GetAllEmployeesAsync();
         Task<Guid> CreateEmployeeAsync(EEmployee model);
+        Task<EEmployee> GetEmployeeById(Guid employeeId);
+        Task<bool> UpdateEmployeeAsync(EEmployee model);
     }
 }
