@@ -1,6 +1,8 @@
 ﻿using CQRSMediator.Application.Command;
+using CQRSMediator.Application.Command.UpdateEmployee;
 using CQRSMediator.Application.Model;
 using CQRSMediator.Application.Queries;
+using CQRSMediator.Application.Queries.GetEmployeeById;
 using CQRSMediator.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -28,8 +30,22 @@ namespace CQRSMediator.Api.Controllers
         [HttpPost("AddEmployeeDetails")]
         public async Task<IActionResult> AddEmployee(EEmployee model)
         {
-            var command = new CreateEmployeeCommand(model.Name,model.Email);
+            var command = new CreateEmployeeCommand(model.Name, model.Email);
             var result = await _mediator.Send(command);
+            return Ok(result);
+        }
+        [HttpGet("{id:Guid}")]
+        public async Task<ActionResult> GetEmployeeById(Guid employeeId)
+        {
+            var query = new GetEmployeeByIdQuery(employeeId);
+            var result = await _mediator.Send(query);
+            return Ok(result);
+        }
+        [HttpPut("UpdateEmployee")]
+        public async Task<ActionResult> UpdateEmployee(EEmployee model)
+        {
+            var query = new UpdateEmployeeCommand(model.Id, model.Name, model.Email);
+            var result = await _mediator.Send(query);
             return Ok(result);
         }
     }

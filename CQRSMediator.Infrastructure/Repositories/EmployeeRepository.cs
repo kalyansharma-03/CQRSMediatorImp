@@ -28,12 +28,27 @@ namespace CQRSMediator.Infrastructure.Repositories
             return model.Id;
         }
 
+        public async Task<bool> UpdateEmployeeAsync(EEmployee model)
+        {
+            using var context = new EmployeeDbContext(_connectionString);
+            context.Employees.Update(model);
+            await context.SaveChangesAsync();
+            return true;
+        }
+
 
         //READ DATA FROM DB USING DAPPER
         public async Task<IEnumerable<EEmployee>> GetAllEmployeesAsync()
         {
             using var connection = new NpgsqlConnection(_connectionString);
             return await connection.QueryAsync<EEmployee>("SELECT * FROM EEmployee");
+        }
+
+        public async Task<EEmployee> GetEmployeeById(Guid employeeId)
+        {
+            using var connection = new NpgsqlConnection(_connectionString);
+            var query = "SELECT * FROM EEmployee WHERE Id = @Id";
+            return await connection.QuerySingleAsync<EEmployee>(query, new { Id = employeeId });
         }
     }
 }
